@@ -1,133 +1,131 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
 import './App.css';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function App() {
 
   const [codigo, setCodigo] = useState();
+  const [link, setLink] = useState('');
   const [descricao, setDescricao] = useState('');
-  const [listaTarefa, setListaTarefa] = useState([]);
-  
+  const [listaLink, setListaLink] = useState([]);
+
 
   useEffect(() => {
     buscar();
-    }, []);
+  }, []);
 
   function buscar() {
-    axios.get('http://localhost:3100/tarefa').then(resultado => {
-      setListaTarefa(resultado.data);
+    axios.get('http://localhost:3100/lista').then(resultado => {
+      setListaLink(resultado.data);
     });
   }
 
   function salvar(event) {
     event.preventDefault();
 
-    let tarefa = {
+    let lista = {
       codigo: codigo,
+      link: link,
       descricao: descricao
     };
 
-    axios.put('http://localhost:3100/tarefa', tarefa).then(() => {
+    axios.put('http://localhost:3100/lista', lista).then(() => {
       buscar();
 
       setCodigo();
+      setLink('');
       setDescricao('');
     });
   }
 
-  function excluir(tarefa) {
-    axios.delete(`http://localhost:3100/tarefa/${tarefa.codigo}`).then((result) => {
+  function excluir(lista) {
+    axios.delete(`http://localhost:3100/lista/${lista.codigo}`).then((result) => {
       buscar();
     });
   }
 
-  function editar(tarefa) {
-    axios.get(`http://localhost:3100/tarefa/${tarefa.codigo}`).then((result) => {
+  function editar(lista) {
+    axios.get(`http://localhost:3100/lista/${lista.codigo}`).then((result) => {
       setCodigo(result.data.codigo);
+      setLink(result.data.link);
       setDescricao(result.data.descricao);
     });
   }
 
-  return (
-    <div className="container">
 
-      <nav class="navbar navbar-expand-lg bg-light">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">Navbar</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Features</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link disabled">Disabled</a>
-              </li>
-            </ul>
+  return (
+    <><div className="container">
+      <div className="card-group">
+        <div className="card">
+          <img src="https://github.com/Rostirola.png" className="card-img-top" alt="..." />
+          <div className="card-body">
+            <h5 className="card-title">Juan Rostirola</h5>
+            <p className="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          </div>
+          <div className="card-footer">
+            <small className="text-muted">Last updated 3 mins ago</small>
           </div>
         </div>
-      </nav>
-
-      <form onSubmit={(event) => salvar(event)}>
-        <div class="mb-3">
-          <label for="formGroupExampleInput" class="form-label">Example label</label>
-          <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input placeholder"></input>
+        <div className="card">
+          <img src="https://github.com/arthurzinho10.png" className="card-img-top" alt="..." />
+          <div className="card-body">
+            <h5 className="card-title">Arthur Foesch</h5>
+            <p className="card-text">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          </div>
+          <div className="card-footer">
+            <small className="text-muted">Last updated 3 mins ago</small>
+          </div>
         </div>
-        <div class="mb-3">
-          <label for="formGroupExampleInput2" class="form-label">Another label</label>
-          <input type="text" class="form-control" id="formGroupExampleInput2" placeholder="Another input placeholder"></input>
+        <div className="card">
+          <img src="https://github.com/Schreiner210.png" className="card-img-top" alt="..." />
+          <div className="card-body">
+            <h5 className="card-title">Lucas Schreiner</h5>
+            <p className="card-text">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+          </div>
+          <div className="card-footer">
+            <small className="text-muted">Last updated 3 mins ago</small>
+          </div>
         </div>
-        <div class="d-grid gap-2">
-          <button class="btn btn-primary" type="button">Button</button>
-          <button class="btn btn-primary" type="button">Button</button>
-        </div>
-      </form>
-
-      <form onSubmit={(event) => salvar(event)}>
+      </div>
+    <form onSubmit={(event) => salvar(event)}>
         <div className="mb-3">
-          <label className="form-label">Descrição</label>
-          <input type="text" className="form-control"
-            value={descricao}
-            onChange={(event) => setDescricao(event.target.value)} />
+          <label className="form-label">Link</label>
+          <input type="text" className="form-control" id="formGroupExampleInput" placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ" value={link} onChange={(event) => setLink(event.target.value)}></input>
         </div>
-
-        <button type="submit" className="btn btn-primary">Salvar</button>
-      </form>
-
-      <h3>Lista de Tarefa</h3>
-
+        <div className="mb-3">
+          <label className="form-label">Descricao</label>
+          <input type="text" className="form-control" id="formGroupExampleInput2" placeholder="Uma completa revolução do audio visual" value={descricao} onChange={(event) => setDescricao(event.target.value)}></input>
+        </div>
+        <div className="d-grid gap-2">
+          <button className="btn btn-primary" type="submit">Salvar</button>
+        </div>
+    </form>
+      <h3>Lista de links</h3>
       <table className="table">
         <thead>
           <tr>
-            <th>Tarefa</th>
-            <td> </td>
+            <th>link</th>
+            <td>Descrição</td>
           </tr>
         </thead>
+        
         <tbody>
-          {listaTarefa.map((tarefa, index) => (
+          {listaLink.map((lista, index) => (
             <tr key={index}>
-              <td>{tarefa.descricao}</td>
+              <td>{lista.link}</td>
+              <td>{lista.descricao}</td>
               <td>
                 <button type='button' className="btn btn-primary"
-                onClick={(event) => editar(tarefa)}>Editar</button>
+                  onClick={(event) => editar(lista)}>Editar</button>
 
                 <button type='button' className="btn btn-danger"
-                onClick={(event) => excluir(tarefa)}>Excluir</button>
+                  onClick={(event) => excluir(lista)}>Excluir</button>
               </td>
             </tr>
-          ))
-        }
+          ))}
         </tbody>
       </table>
-    </div>
+      </div></>
   );
 }
 
